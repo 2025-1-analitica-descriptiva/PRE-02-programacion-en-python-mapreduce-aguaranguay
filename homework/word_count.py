@@ -19,6 +19,9 @@ from itertools import groupby
 #
 def copy_raw_files_to_input_folder(n):
     """Funcion copy_files"""
+    if not os.path.exists("files/input"):
+        os.makedirs("files/input"):
+    for file in glob.glob("files/raw/*")
 
 
 #
