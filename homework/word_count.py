@@ -19,7 +19,7 @@ from itertools import groupby
 #
 def copy_raw_files_to_input_folder(n):
     """Funcion copy_files"""
-    
+
     if not os.path.exists("files/input"):
         os.makedirs("files/input")
 
@@ -52,6 +52,14 @@ def copy_raw_files_to_input_folder(n):
 def load_input(input_directory):
     """Funcion load_input"""
 
+    sequence = []
+    files = glob.glob(f"{input_directory}/*")
+    with fileinput.input(files=files) as f:
+        for line in f:
+            sequence.append((fileinput.filename(), line))
+    return sequence
+                    
+                    
 
 #
 # Escriba la función line_preprocessing que recibe una lista de tuplas de la
@@ -60,6 +68,11 @@ def load_input(input_directory):
 #
 def line_preprocessing(sequence):
     """Line Preprocessing"""
+    sequence = [
+        (key, value.translate(str.maketrans("", "", string.punctuation)).lower())
+        for key, value in sequence
+    ]
+    return sequence
 
 
 #
@@ -76,7 +89,7 @@ def line_preprocessing(sequence):
 #
 def mapper(sequence):
     """Mapper"""
-
+    return [(word, 1) for _, value in sequence for word in value.split()]
 
 #
 # Escriba la función shuffle_and_sort que recibe la lista de tuplas entregada
@@ -134,9 +147,14 @@ def create_marker(output_directory):
 #
 # Escriba la función job, la cual orquesta las funciones anteriores.
 #
+from pprint import pprint
 def run_job(input_directory, output_directory):
     """Job"""
 
+    sequence = load_input(input_directory)
+    sequence = line_preprocessing(sequence)
+    sequence =  mapper(sequence)
+    pprint(sequence[:5])
 
 if __name__ == "__main__":
 
